@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đố Vui Về Quốc Long</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #fef9e7; /* Vàng nhạt chủ đạo */
+            color: #4a3f35;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fffdf5;
+            border: 2px solid #f7dc6f;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(212, 172, 13, 0.15);
+            width: 100%;
+            max-width: 600px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #b7950b;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        /* Khung nhập tên */
+        #name-screen input {
+            width: 80%;
+            padding: 12px 16px;
+            border: 2px solid #f1c40f;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            margin-bottom: 20px;
+            background-color: #fffef0;
+        }
+
+        /* Ô chứa câu hỏi lớn */
+        .question-box {
+            background-color: #fcf3cf;
+            border: 2px solid #f4d03f;
+            border-radius: 12px;
+            padding: 24px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #7d6608;
+            margin-bottom: 20px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Khung chứa các đáp án ngang nhau */
+        .answers-grid {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .answer-btn {
+            flex: 1;
+            background-color: #fff8dc;
+            border: 2px solid #f5cba7;
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 16px;
+            color: #5d4037;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .answer-btn:hover {
+            background-color: #f9e79f;
+            border-color: #f1c40f;
+            transform: translateY(-2px);
+        }
+
+        /* Nút bấm chung */
+        .btn {
+            background-color: #f1c40f;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #d4ac0d;
+        }
+
+        /* Lịch sử điểm số */
+        .history-box {
+            margin-top: 25px;
+            border-top: 1px dashed #f4d03f;
+            padding-top: 15px;
+            text-align: left;
+        }
+
+        .history-box h3 {
+            color: #b7950b;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .history-list {
+            list-style: none;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .history-list li {
+            background: #fef5d1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- MÀN HÌNH 1: NHẬP TÊN -->
+    <div id="name-screen">
+        <h1>BÀI TRẮC NGHIỆM VỀ QUỐC LONG </h1>
+        <p style="margin-bottom: 15px; color: #7e5109;">Vui lòng nhập tên của bạn trước khi làm bài:</p>
+        <input type="text" id="username" placeholder="Tên của bạn là gì?..." />
+        <br>
+        <button class="btn" onclick="startQuiz()">Bắt Đầu Làm Bài</button>
+    </div>
+
+    <!-- MÀN HÌNH 2: TRẢ LỜI CÂU HỎI -->
+    <div id="quiz-screen" class="hidden">
+        <div style="text-align: right; margin-bottom: 10px; font-weight: bold; color: #b7950b;" id="progress">
+            Câu 1/5
+        </div>
+        <!-- Ô lớn chứa câu hỏi -->
+        <div class="question-box" id="question-text">
+            Đang tải câu hỏi...
+        </div>
+        <!-- 2 ô đáp án đứng ngang nhau -->
+        <div class="answers-grid" id="answers-container">
+            <!-- Đáp án sẽ hiển thị ở đây -->
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH 3: KẾT QUẢ -->
+    <div id="result-screen" class="hidden">
+        <h1>KẾT QUẢ BÀI THI</h1>
+        <p style="font-size: 18px; margin: 15px 0;">
+            Người chơi: <strong id="result-name" style="color: #b7950b;">...</strong>
+        </p>
+        <div style="font-size: 28px; font-weight: bold; color: #d4ac0d; margin-bottom: 20px;">
+            Số điểm: <span id="score">0</span> / 5
+        </div>
+        <button class="btn" onclick="restartQuiz()">Làm Lại Lần Nữa</button>
+    </div>
+
+    <!-- BẢNG GHI BẢNG ĐIỂM CÁC LƯỢT CHƠI -->
+    <div class="history-box">
+        <h3>Lịch sử các lượt chơi:</h3>
+        <ul class="history-list" id="history-list">
+            <!-- Kết quả sẽ đọng lại ở đây -->
+        </ul>
+    </div>
+</div>
+
+<script>
+    // Danh sách câu hỏi và đáp án đúng theo yêu cầu
+    const questionsData = [
+        {
+            question: "Câu 1: Quốc Long có đẹp trai không?",
+            answers: [
+                { text: "A. Có", isCorrect: true },
+                { text: "B. Rất đẹp trai", isCorrect: true } // Cả A và B đều đúng
+            ]
+        },
+        {
+            question: "Câu 2: Quốc Long ghéc con gì nhất?",
+            answers: [
+                { text: "A. Chuột", isCorrect: false },
+                { text: "B. Ko sợ gì hết", isCorrect: true } // Đáp án B đúng
+            ]
+        },
+        {
+            question: "Câu 3: Quốc Long họ tên là gì ngày tháng năm sinh?",
+            answers: [
+                { text: "A. Lâm Nguyễn Quốc Long 11/7/2012", isCorrect: false },
+                { text: "B. Lâm Nguyễn Quốc Long 7/11/2012", isCorrect: true } // Đáp án B đúng
+            ]
+        },
+        {
+            question: "Câu 4: Quốc Long có mups không?",
+            answers: [
+                { text: "A. Cực kì", isCorrect: true },
+                { text: "B. Có nha", isCorrect: true } // Cả A và B đều đúng
+            ]
+        },
+        {
+            question: "Câu 5: Quốc Long sẽ trở thành...",
+            answers: [
+                { text: "A. Tỉ Phú", isCorrect: true }, // Đáp án A đúng
+                { text: "B. Đỗ nghèo khỉ", isCorrect: false }
+            ]
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let username = "";
+
+    // Bắt đầu bài trắc nghiệm
+    function startQuiz() {
+        const inputName = document.getElementById("username").value.trim();
+        if (inputName === "") {
+            alert("Bạn vui lòng nhập tên trước nhé!");
+            return;
+        }
+        username = inputName;
+        score = 0;
+        currentQuestionIndex = 0;
+
+        document.getElementById("name-screen").classList.add("hidden");
+        document.getElementById("result-screen").classList.add("hidden");
+        document.getElementById("quiz-screen").classList.remove("hidden");
+
+        showQuestion();
+    }
+
+    // Hiển thị câu hỏi và đáp án đã xáo trộn
+    function showQuestion() {
+        const q = questionsData[currentQuestionIndex];
+        document.getElementById("progress").innerText = `Câu ${currentQuestionIndex + 1}/${questionsData.length}`;
+        document.getElementById("question-text").innerText = q.question;
+
+        // Xáo trộn đáp án ngẫu nhiên
+        const shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
+
+        const answersContainer = document.getElementById("answers-container");
+        answersContainer.innerHTML = "";
+
+        shuffledAnswers.forEach(ans => {
+            const btn = document.createElement("button");
+            btn.className = "answer-btn";
+            btn.innerText = ans.text;
+            btn.onclick = () => selectAnswer(ans.isCorrect);
+            answersContainer.appendChild(btn);
+        });
+    }
+
+    // Xử lý khi chọn câu trả lời
+    function selectAnswer(isCorrect) {
+        if (isCorrect) {
+            score++;
+        }
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questionsData.length) {
+            showQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    // Hoàn thành và hiện kết quả
+    function finishQuiz() {
+        document.getElementById("quiz-screen").classList.add("hidden");
+        document.getElementById("result-screen").classList.remove("hidden");
+
+        document.getElementById("result-name").innerText = username;
+        document.getElementById("score").innerText = score;
+
+        // Lưu điểm vào danh sách lịch sử bên dưới
+        const historyList = document.getElementById("history-list");
+        const li = document.createElement("li");
+        li.innerHTML = `<span><strong>${username}</strong></span> <span>${score}/5 điểm</span>`;
+        historyList.prepend(li);
+    }
+
+    // Chơi lại
+    function restartQuiz() {
+        document.getElementById("result-screen").classList.add("hidden");
+        document.getElementById("name-screen").classList.remove("hidden");
+        document.getElementById("username").value = "";
+    }
+</script>
+
+</body>
+</html>
